@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Take new files from a list of directories, give them show titles and content, the "podcast" genre, and FTP them up to the Wordpress site
+
+FTP_SERVER=web519.webfaction.com
+FTP_DIR="webapps/rfp_wp/wp-content/uploads/mp3-to-post"
+FTP_USER=tescher
+LOCALDIR=~/rfpserver
+PODCAST_GENRE=podcast     # how to tag mp3s for the podcast blog feed
+START_AFTER_DATE=2016-09-01
+
+declare -A podcasts
+podcasts["Mushing Radio"]="Mushing Radio|From Dog Talk Radio"
+podcasts["Classics"]="Classic Recordings|The latest in classical stuff"
+
+cd ${LOCALDIR}
+
+for dir in "${!podcasts[@]}"
+do
+  if [ -d "${dir}" ]; then
+    cd "${dir}"
+    IFS="|"; read -ra podcast_info <<< "${podcasts[${dir}]}"
+    touch timestamp -d ${START_AFTER_DATE}
+    find . -newer timestamp -name "*.mp3" | while read fname; do
+      echo Looking at ${fname}
+      if ! mid3v2 -l "${fname}" | grep -q TCON=${PODCAST_GENRE}; then
+        echo New file found: ${fname}
+        filedata=`stat -c%y "${fname}"`
+        IFS=" "; read -ra filedata_array <<< "${filedata}"
+        filedate=`date -d ${filedata_array[0]} +%m/%d/%Y`
+        mid3v2 --delete-frames=COMM "${fname}"
+        mid3v2 -g "${PODCAST_GENRE}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${fname}"
+        sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${fname}\""
+      fi
+    done
+  fi
+done
