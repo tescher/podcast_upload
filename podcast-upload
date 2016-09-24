@@ -7,7 +7,7 @@ FTP_DIR="webapps/rfp_wp/wp-content/uploads/mp3-to-post"
 FTP_USER=tescher
 LOCALDIR=/rfpserver
 PODCAST_GENRE=podcast     # how to tag mp3s for the podcast blog feed
-START_AFTER_DATE=2016-09-01
+START_AFTER_DATE=2016-03-01
 
 declare -A podcasts
 podcasts["Mushing Radio"]="Mushing Radio|From Dog Talk Radio"
