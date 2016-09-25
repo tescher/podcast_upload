@@ -5,8 +5,10 @@
 FTP_SERVER=web519.webfaction.com
 FTP_DIR="webapps/rfp_wp/wp-content/uploads/mp3-to-post"
 FTP_USER=tescher
-LOCALDIR=/rfpserver
+LOCALDIR=~/rfpserver
+TEMP_DIR=~/temp
 PODCAST_GENRE=podcast     # how to tag mp3s for the podcast blog feed
+MARKER_COMMENT=podcastuploaded  #Comment that signals file looked at
 START_AFTER_DATE=2016-03-01
 
 declare -A podcasts
@@ -22,15 +24,19 @@ do
     IFS="|"; read -ra podcast_info <<< "${podcasts[${dir}]}"
     touch timestamp -d ${START_AFTER_DATE}
     find . -newer timestamp -name "*.mp3" | while read fname; do
+      fname=$(basename "${fname}")
       echo Looking at ${fname}
-      if ! mid3v2 -l "${fname}" | grep -q TCON=${PODCAST_GENRE}; then
+      if ! mid3v2 -l "${fname}" | grep -q ${MARKER_COMMENT}; then
         echo New file found: ${fname}
         filedata=`stat -c%y "${fname}"`
         IFS=" "; read -ra filedata_array <<< "${filedata}"
         filedate=`date -d ${filedata_array[0]} +%m/%d/%Y`
-        mid3v2 --delete-frames=COMM "${fname}"
-        mid3v2 -g "${PODCAST_GENRE}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${fname}"
-        sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${fname}\""
+        cp "${fname}" "${TEMP_DIR}"
+        mid3v2 --delete-frames=COMM "${TEMP_DIR}/${fname}"
+        mid3v2 -g "${PODCAST_GENRE}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${TEMP_DIR}/${fname}"
+        sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${TEMP_DIR}/${fname}\""
+        mid3v2 -c "${MARKER_COMMENT}" "${fname}"
+        rm "${TEMP_DIR}/${fname}"
       fi
     done
   fi
