@@ -7,13 +7,13 @@ FTP_DIR="webapps/rfp_wp/wp-content/uploads/mp3-to-post"
 FTP_USER=tescher
 LOCALDIR=~/rfpserver
 TEMP_DIR=~/temp
-PODCAST_GENRE=podcast     # how to tag mp3s for the podcast blog feed
+PODCAST_GENRE_DEFAULT=podcast     # how to tag mp3s for the podcast blog feed
 MARKER_COMMENT=podcastuploaded  #Comment that signals file looked at
 START_AFTER_DATE=2016-03-01
 
 declare -A podcasts
-podcasts["Mushing Radio"]="Mushing Radio|From Dog Talk Radio"
-podcasts["Classics"]="Classic Recordings|The latest in classical stuff"
+podcasts["Mushing Radio"]="Mushing Radio|From Dog Talk Radio|mushingradio"
+podcasts["Classics"]="Classical Music Radio|Music Classics|uncategorized"
 
 cd ${LOCALDIR}
 
@@ -22,6 +22,13 @@ do
   if [ -d "${dir}" ]; then
     cd "${dir}"
     IFS="|"; read -ra podcast_info <<< "${podcasts[${dir}]}"
+    if [ -n "${podcast_info[2]}" ]
+    then
+      podcast_genre="${podcast_info[2]}"
+    else
+      podcast_genre="${PODCAST_GENRE_DEFAULT}"
+    fi
+    echo "${podcast_genre}"
     touch timestamp -d ${START_AFTER_DATE}
     find . -newer timestamp -name "*.mp3" | while read fname; do
       fname=$(basename "${fname}")
@@ -33,7 +40,7 @@ do
         filedate=`date -d ${filedata_array[0]} +%m/%d/%Y`
         cp "${fname}" "${TEMP_DIR}"
         mid3v2 --delete-frames=COMM "${TEMP_DIR}/${fname}"
-        mid3v2 -g "${PODCAST_GENRE}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${TEMP_DIR}/${fname}"
+        mid3v2 -g "${podcast_genre}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${TEMP_DIR}/${fname}"
         sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${TEMP_DIR}/${fname}\""
         mid3v2 -c "${MARKER_COMMENT}" "${fname}"
         rm "${TEMP_DIR}/${fname}"
