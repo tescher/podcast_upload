@@ -5,7 +5,7 @@
 FTP_SERVER=web519.webfaction.com
 FTP_DIR="webapps/rfp_wp/wp-content/uploads/mp3-to-post"
 FTP_USER=tescher
-LOCALDIR=~/rfpserver
+LOCALDIR=/rfpserver
 TEMP_DIR=~/temp
 PODCAST_GENRE_DEFAULT=podcast     # how to tag mp3s for the podcast blog feed
 MARKER_COMMENT=podcastuploaded  #Comment that signals file looked at
@@ -14,6 +14,7 @@ START_AFTER_DATE=2016-03-01
 declare -A podcasts
 podcasts["Mushing Radio"]="Mushing Radio|From Dog Talk Radio|mushingradio"
 podcasts["Classics"]="Classical Music Radio|Music Classics|uncategorized"
+podcasts["Radio Book Club"]="Radio Book Club|Latest book discussion moderated by Judy Gette|bookclub"
 
 cd ${LOCALDIR}
 
