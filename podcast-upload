@@ -2,9 +2,9 @@
 #
 # Take new files from a list of directories, give them show titles and content, the "podcast" genre, and FTP them up to the Wordpress site
 
-FTP_SERVER=web519.webfaction.com
-FTP_DIR="webapps/rfp_wp/wp-content/uploads/mp3-to-post"
-FTP_USER=tescher
+FTP_SERVER=radiofreepalmer.org
+FTP_DIR="html/wp-content/uploads/mp3-to-post"
+FTP_USER=mikecski
 LOCALDIR=/rfpserver
 TEMP_DIR=~/temp
 PODCAST_GENRE_DEFAULT=podcast     # how to tag mp3s for the podcast blog feed
@@ -12,14 +12,15 @@ MARKER_COMMENT=podcastuploaded  #Comment that signals file looked at
 START_AFTER_DATE=2016-03-01
 
 declare -A podcasts
-podcasts["Mushing Radio"]="Mushing Radio|From Dog Talk Radio|mushingradio"
-podcasts["Classics"]="Classical Music Radio|Music Classics|uncategorized"
-podcasts["Radio Book Club"]="Radio Book Club|Latest book discussion moderated by Judy Gette|bookclub"
+podcasts["Radio Book Club"]="Radio Book Club|Latest book discussion moderated by Judy Gette|Radio Book Club"
+podcasts["Sports Scene with Tim Rockey"]="Sports Scene with Tim Rockey|Local sports discussion with Tim Rockey|Sports Scene with Tim Rockey"
+podcasts["YouAutoKnow"]="You Auto Know|Weekly show on auto care and repair, hosted by Tobi and Edmonds of Edmonds Auto in Palmer|You Auto Know"
 
 cd ${LOCALDIR}
 
 for dir in "${!podcasts[@]}"
 do
+  echo "Looking for directory \"${dir}\""
   if [ -d "${dir}" ]; then
     cd "${dir}"
     IFS="|"; read -ra podcast_info <<< "${podcasts[${dir}]}"
@@ -29,7 +30,7 @@ do
     else
       podcast_genre="${PODCAST_GENRE_DEFAULT}"
     fi
-    echo "${podcast_genre}"
+    echo "Found ${podcast_genre}"
     touch timestamp -d ${START_AFTER_DATE}
     find . -newer timestamp -name "*.mp3" | while read fname; do
       fname=$(basename "${fname}")
@@ -42,10 +43,12 @@ do
         cp "${fname}" "${TEMP_DIR}"
         mid3v2 --delete-frames=COMM "${TEMP_DIR}/${fname}"
         mid3v2 -g "${podcast_genre}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${TEMP_DIR}/${fname}"
-        sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${TEMP_DIR}/${fname}\""
+#        sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${TEMP_DIR}/${fname}\""
+        scp -c blowfish "${TEMP_DIR}/${fname}" ${FTP_USER}@${FTP_SERVER}:${FTP_DIR}
         mid3v2 -c "${MARKER_COMMENT}" "${fname}"
         rm "${TEMP_DIR}/${fname}"
       fi
     done
+    cd ${LOCALDIR}
   fi
 done
