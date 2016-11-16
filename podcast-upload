@@ -15,6 +15,8 @@ declare -A podcasts
 podcasts["Radio Book Club"]="Radio Book Club|Latest book discussion moderated by Judy Gette|Radio Book Club"
 podcasts["Sports Scene with Tim Rockey"]="Sports Scene with Tim Rockey|Local sports discussion with Tim Rockey|Sports Scene with Tim Rockey"
 podcasts["YouAutoKnow"]="You Auto Know|Weekly show on auto care and repair, hosted by Tobi and Edmonds of Edmonds Auto in Palmer|You Auto Know"
+podcasts["Valley Edition"]="Valley Edition|Michael Chmielewski moderates a panel on current issues in the Valley|Valley Edition"
+podcasts["MorningShowInterviews(New)"]="Morning Show Interviews|Interviews from the Mike and Friends morning show|Morning Show Interviews"
 
 cd ${LOCALDIR}
 
