@@ -21,7 +21,7 @@ podcasts["Glacier Review"]="Glacier Review|Current events, science, and art from
 podcasts["Citizen Lobbyist 2016:17"]="Citizen Lobbyist|Discussion of local, borough, and state politics|Citizen Lobbyist"
 podcasts["Dog Talk Radio:Mushing Radio"]="Dog Talk Radio|Interviews the top names in the sport of dog sledding along with our annual nightly coverage of the Iditarod each March|Dog Talk Radio"
 podcasts["Inside the City"]="Inside the City|Discussions and interviews with employees and administrators from the city of Palmer|Inside the City"
-
+podcasts["AG Matters"]="Ag Matters|Farming in Alaska with Amy Petit from Alaska Farmland Trust|Ag Matters"
 
 cd ${LOCALDIR}
 
