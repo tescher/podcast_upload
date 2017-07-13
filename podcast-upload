@@ -5,11 +5,16 @@
 FTP_SERVER=radiofreepalmer.org
 FTP_DIR="html/wp-content/uploads/mp3-to-post"
 FTP_USER=mikecski
+MID3_PATH="/usr/local/bin"
 LOCALDIR=/rfpserver
 TEMP_DIR=~/temp
 PODCAST_GENRE_DEFAULT=podcast     # how to tag mp3s for the podcast blog feed
 MARKER_COMMENT=podcastuploaded  #Comment that signals file looked at
 START_AFTER_DATE=2016-03-01
+
+if [ -d "${MID3_PATH}" ] && [[ ":$PATH:" != *":$MID3_PATH:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$MID3_PATH"
+fi
 
 declare -A podcasts
 podcasts["Radio Book Club"]="Radio Book Club|Latest book discussion moderated by Judy Gette|Radio Book Club"
@@ -51,7 +56,8 @@ do
         mid3v2 --delete-frames=COMM "${TEMP_DIR}/${fname}"
         mid3v2 -g "${podcast_genre}" -t "${podcast_info[0]} ${filedate}" -c "${podcast_info[1]}" "${TEMP_DIR}/${fname}"
 #        sftp ${FTP_USER}@${FTP_SERVER}:${FTP_DIR} <<< $"put \"${TEMP_DIR}/${fname}\""
-        scp -c blowfish "${TEMP_DIR}/${fname}" ${FTP_USER}@${FTP_SERVER}:${FTP_DIR}
+        # scp -c blowfish "${TEMP_DIR}/${fname}" ${FTP_USER}@${FTP_SERVER}:${FTP_DIR}
+        scp "${TEMP_DIR}/${fname}" ${FTP_USER}@${FTP_SERVER}:${FTP_DIR}
         mid3v2 -c "${MARKER_COMMENT}" "${fname}"
         rm "${TEMP_DIR}/${fname}"
       fi
