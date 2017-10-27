@@ -19,7 +19,7 @@ fi
 
 # Podcast metadata array
 # podcasts[directory]=title|description|genre
-# read from PODACAST_DATA_FILE with lines: directory:title|description|genre
+# read from PODACAST_DATA_FILE with lines: directory|title|description|genre (wordpress category)
 
 declare -A podcasts
 
