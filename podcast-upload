@@ -7,11 +7,11 @@ FTP_DIR="${PU_FTP_DIR:-html/wp-content/uploads/mp3-to-post}"
 FTP_USER="${PU_FTP_USER:-mikecski}"
 MID3_PATH="${PU_MID3_PATH:-/usr/local/bin}"
 LOCALDIR="${PU_LOCALDIR:-/rfpserver}"
-TEMP_DIR="${PU_TEMP_DIR:-~/temp}"
+TEMP_DIR="${PU_TEMP_DIR:-temp}"
 PODCAST_GENRE_DEFAULT="${PU_PODCAST_GENRE_DEFAULT:-podcast}"     # how to tag mp3s for the podcast blog feed
 MARKER_COMMENT="${PU_MARKER_COMMENT:-podcastuploaded}"  #Comment that signals file looked at
 START_AFTER_DATE="${PU_START_AFTER_DATE:-2016-03-01}"
-PODCAST_DATA_FILE="${PU_PODCAST_DATA_FILE:-~/podcast_data.txt}"
+PODCAST_DATA_FILE="${PU_PODCAST_DATA_FILE:-podcast_data.txt}"
 
 if [ -d "${MID3_PATH}" ] && [[ ":$PATH:" != *":$MID3_PATH:"* ]]; then
     PATH="${PATH:+"$PATH:"}$MID3_PATH"
