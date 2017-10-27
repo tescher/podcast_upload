@@ -26,7 +26,7 @@ declare -A podcasts
 while IFS='' read -r line || [[ -n "$line" ]]; do
     echo "Reading podcast data: $line"
     IFS="|"; read -r dir data
-    podcasts["${dir}]="${data}"
+    podcasts["${dir}"]="${data}"
 done < "${PODCAST_DATA_FILE}"
 
 # podcasts["Radio Book Club"]="Radio Book Club|Latest book discussion moderated by Judy Gette|Radio Book Club"
