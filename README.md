@@ -48,5 +48,10 @@ Find line 282 (a "break" command) and comment it out by putting two forward slas
       
 Copy all the code and replace it back into the file in WordPress and click Update File to save it.
 
+Podcast Setup
+=============
+How to hook the resulting Wordpress feed to podcast directories (like iTunes) is outside the scope of this document (because it is constantly evolving), but you can start here:
 
+https://codex.wordpress.org/WordPress_Feeds
+https://codex.wordpress.org/Using_FeedBurner
 
